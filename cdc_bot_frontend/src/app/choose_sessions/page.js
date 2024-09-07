@@ -13,6 +13,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useAtom } from "jotai";
+import { userAtom } from "../../jotaiStore";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 import React from "react";
 
@@ -97,67 +100,79 @@ export default function TableDemo() {
   }
   const [alldates, setDate] = React.useState([]);
   const [dates_selected, setSelected] = React.useState([]);
+  const [user, setUser] = useAtom(userAtom);
+  const [loaded, setLoaded] = React.useState(false);
 
   React.useEffect(() => {
     generateDates(60);
+    setLoaded(true);
   }, []);
 
-  return (
-    <ScrollArea className="grow whitespace-nowrap rounded-md border">
-      <Table>
-        <TableCaption>Dates from now to 60 days</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead key={0}>Timings</TableHead>
-            {alldates.map((day) => (
-              <TableHead key={day.date}>
-                {day.date} {day.day}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {slots.map((slot, slotIndex) => (
-            <TableRow key={slot}>
-              <TableCell className="font-medium">{slot}</TableCell>
-              {alldates.map((date, dateIndex) => (
-                <TableCell key={`${dateIndex}-${slotIndex}`}>
-                  <Checkbox
-                    id="terms"
-                    checked={isObjectInArray(dates_selected, {
-                      date: date.date,
-                      time: slot,
-                      slotNo: (slotIndex + 1.0).toFixed(2),
-                    })}
-                    onClick={() =>
-                      addItem({
+  if (!loaded) {
+    return <LoadingSpinner />;
+  } else {
+    return (
+      <ScrollArea className="grow whitespace-nowrap rounded-md border">
+        <div>
+          {user.username}
+          {user.password}
+        </div>
+        <Table>
+          <TableCaption>Dates from now to 60 days</TableCaption>
+
+          <TableHeader>
+            <TableRow>
+              <TableHead key={0}>Timings</TableHead>
+              {alldates.map((day) => (
+                <TableHead key={day.date}>
+                  {day.date} {day.day}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {slots.map((slot, slotIndex) => (
+              <TableRow key={slot}>
+                <TableCell className="font-medium">{slot}</TableCell>
+                {alldates.map((date, dateIndex) => (
+                  <TableCell key={`${dateIndex}-${slotIndex}`}>
+                    <Checkbox
+                      id="terms"
+                      checked={isObjectInArray(dates_selected, {
                         date: date.date,
                         time: slot,
                         slotNo: (slotIndex + 1.0).toFixed(2),
-                      })
-                    }
-                    disabled={
-                      (date.day == "Sunday" && slot == "6:50pm") ||
-                      (date.day == "Sunday" && slot == "8:40pm") ||
-                      (date.day == "Saturday" && slot == "6:50pm") ||
-                      (date.day == "Saturday" && slot == "8:40pm")
-                    }
-                  />
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter></TableFooter>
-      </Table>
-      <Button
-        onClick={() => {
-          console.log(dates_selected);
-        }}
-      >
-        Save timings
-      </Button>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
-  );
+                      })}
+                      onClick={() =>
+                        addItem({
+                          date: date.date,
+                          time: slot,
+                          slotNo: (slotIndex + 1.0).toFixed(2),
+                        })
+                      }
+                      disabled={
+                        (date.day == "Sunday" && slot == "6:50pm") ||
+                        (date.day == "Sunday" && slot == "8:40pm") ||
+                        (date.day == "Saturday" && slot == "6:50pm") ||
+                        (date.day == "Saturday" && slot == "8:40pm")
+                      }
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter></TableFooter>
+        </Table>
+        <Button
+          onClick={() => {
+            console.log(user);
+          }}
+        >
+          Save timings
+        </Button>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    );
+  }
 }

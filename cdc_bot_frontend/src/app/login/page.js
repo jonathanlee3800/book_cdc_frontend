@@ -1,7 +1,8 @@
 "use client"; // This is a client component 👈🏽
 
 import * as React from "react";
-
+import { useAtom } from "jotai";
+import { userAtom } from "../../jotaiStore";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,17 +14,23 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 export default function CardWithForm() {
   const [learnerId, setLearnerId] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [user, setUser] = useAtom(userAtom);
+  const router = useRouter();
 
   function LogIn() {
-    console.log(learnerId, password);
+    //call login api 
+    //set global state User from data 
+    setUser({ username: learnerId, password: password });
+    router.push("/choose_sessions");
   }
 
   return (
-    <div class="flex justify-center">
+    <div className="flex justify-center">
       <Card className=" grow">
         <CardHeader>
           <CardTitle>Login</CardTitle>
