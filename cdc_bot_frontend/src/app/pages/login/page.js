@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useAtom } from "jotai";
-import { userAtom } from "../../jotaiStore";
+import { userAtom } from "../../../jotaiStore";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,19 +21,20 @@ export default function CardWithForm() {
   const [password, setPassword] = React.useState("");
   const [user, setUser] = useAtom(userAtom);
   const router = useRouter();
+  const [error, setError] = React.useState(false);
 
   function LogIn() {
-    //call login api 
-    //set global state User from data 
+    //call login api
+    //set global state User api data -> setUser()
     setUser({ username: learnerId, password: password });
-    router.push("/choose_sessions");
+    router.push("/pages/home");
   }
 
   return (
-    <div className="flex justify-center">
-      <Card className=" grow">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>to your CDC account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -60,8 +61,13 @@ export default function CardWithForm() {
             </div>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button onClick={() => LogIn()}>Login</Button>
+        <CardFooter className="flex flex-col items-start space-y-2">
+          <Button className="w-full" onClick={() => LogIn()}>
+            Login
+          </Button>
+          {error ? (
+            <p className="text-red-500 text-sm mt-2">Error Logging in</p>
+          ) : null}{" "}
         </CardFooter>
       </Card>
     </div>
