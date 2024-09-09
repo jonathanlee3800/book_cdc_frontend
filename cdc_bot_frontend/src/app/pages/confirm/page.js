@@ -33,7 +33,11 @@ export default function CardWithForm() {
     router.push("/pages/choose_sessions");
     console.log(slotAtom);
   }
-
+  function Confirm() {
+    //api call to confirm slots
+    //if success -> router.push("/pages/confirmation")
+    router.push("/pages/checkout");
+  }
   React.useEffect(() => {
     //api call to get CDC account balance and credits -> setCDCaccBalance(),setCreditAtom()
   }, []);

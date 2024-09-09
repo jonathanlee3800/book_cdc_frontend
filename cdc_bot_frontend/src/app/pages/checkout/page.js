@@ -1,4 +1,6 @@
-import React, { useCallback, useState, useEffect } from "react";
+"use client";
+
+import React, { useCallback } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   EmbeddedCheckoutProvider,
@@ -6,15 +8,18 @@ import {
 } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(
-  "pk_test_51PwT4ILCEGsprt1y74nXCk1Jx3Vunn77Oq5NEPomEzM0CuaVGZ80nrlHEwwVyRnaFBhZNRVK1PHJKDKGsfqFfbmS008IG8PK2C"
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-const CheckoutForm = () => {
+export default function App() {
   const fetchClientSecret = useCallback(() => {
     // Create a Checkout Session
-    return fetch("/create-checkout-session", {
-      method: "POST",
-    })
+    return fetch(
+      "https://cdc-bot-backend-73df7705fb11.herokuapp.com/api/stripe/create-checkout-session",
+      {
+        method: "POST",
+      }
+    )
       .then((res) => res.json())
       .then((data) => data.clientSecret);
   }, []);
@@ -28,4 +33,4 @@ const CheckoutForm = () => {
       </EmbeddedCheckoutProvider>
     </div>
   );
-};
+}

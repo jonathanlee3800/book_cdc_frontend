@@ -1,15 +1,9 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  EmbeddedCheckoutProvider,
-  EmbeddedCheckout,
-} from "@stripe/react-stripe-js";
+"use client";
 
-const stripePromise = loadStripe(
-  "pk_test_51PwT4ILCEGsprt1y74nXCk1Jx3Vunn77Oq5NEPomEzM0CuaVGZ80nrlHEwwVyRnaFBhZNRVK1PHJKDKGsfqFfbmS008IG8PK2C"
-);
+import React, { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
-const Return = () => {
+export default function Return() {
   const [status, setStatus] = useState(null);
   const [customerEmail, setCustomerEmail] = useState("");
 
@@ -18,7 +12,12 @@ const Return = () => {
     const urlParams = new URLSearchParams(queryString);
     const sessionId = urlParams.get("session_id");
 
-    fetch(`/session-status?session_id=${sessionId}`)
+    fetch(
+      `https://cdc-bot-backend-73df7705fb11.herokuapp.com/api/stripe/retrieve-checkout-session?session_id=${sessionId}`,
+      {
+        method: "GET",
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         setStatus(data.status);
@@ -27,7 +26,7 @@ const Return = () => {
   }, []);
 
   if (status === "open") {
-    return <Navigate to="/checkout" />;
+    return redirect("/");
   }
 
   if (status === "complete") {
@@ -43,4 +42,4 @@ const Return = () => {
   }
 
   return null;
-};
+}
